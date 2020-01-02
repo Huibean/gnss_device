@@ -47,6 +47,7 @@ class UBlox:
                 self.proxy.send(buf)
             except Exception as e:
                 print(e)
+                print("clean proxy client!")
                 self.proxy = None
 
     @property
