@@ -42,6 +42,40 @@ class UBlox:
         return self.dev.write(buf)
 
     @property
+    def gnss_count(self):
+        count = 0
+        if 'MSG_NAV_SAT' in self.status:
+            for satellite in self.status['MSG_NAV_SAT']['svs']:
+                if satellite['svUsed']:
+                    count += 1
+            
+        return count
+
+    @property
+    def is_survey_in_success(self):
+        flag = False
+        if 'MSG_NAV_SVIN' in self.status:
+            flag = self.status['valid']
+
+        return flag
+
+    @property
+    def is_survey_in_processing(self):
+        flag = False
+        if 'MSG_NAV_SVIN' in self.status:
+            flag = self.status['active']
+
+        return flag
+
+    @property
+    def survey_in_acc(self):
+        acc = 1000000
+        if 'MSG_NAV_SVIN' in self.status:
+            acc = int(self.status['meanAcc'] * 10)
+
+        return acc
+
+    @property
     def status(self):
         return self.ubxParseManager.status
 

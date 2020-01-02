@@ -203,9 +203,10 @@ class UbxParseManager(object):
         return self.wrap_ubx_crc(buf)
         #  print(len(self.wrap_ubx_crc(buf)), struct.unpack('<{0}B'.format(len(self.wrap_ubx_crc(buf))), self.wrap_ubx_crc(buf)))
         print("ublox enter_svin")
-    
+
     def parse(self, class_id, msg_id, payload):
         self.last_parsed = time.time()
+        #  print("ubx parse", class_id, msg_id)
         if class_id == CLASS_NAV and msg_id == MSG_NAV_SVIN:
             #  print("MSG_NAV_SVIN")
             res = struct.unpack("<b 3b I I 3i 3b B II B B 2B", payload)
@@ -229,7 +230,7 @@ class UbxParseManager(object):
                     'resserved3': res[17:19],
                     }
 
-            #  print(self.status["MSG_NAV_SVIN"])
+            print(self.status["MSG_NAV_SVIN"])
 
         elif class_id == CLASS_NAV and msg_id == MSG_NAV_CLOCK:
             #  print("MSG_NAV_CLOCK")
