@@ -41,6 +41,14 @@ class UBlox:
     def write(self, buf):
         return self.dev.write(buf)
 
+    def handle_proxy(self, buf):
+        if self.proxy:
+            try:
+                self.proxy.send(buf)
+            except Exception as e:
+                print(e)
+                self.proxy = None
+
     @property
     def gnss_count(self):
         count = 0
@@ -103,8 +111,7 @@ class UBlox:
                 if rtcm3ParseManager.is_full():
                     rtcm_queue.put(rtcm3ParseManager.buf)
 
-                    if self.proxy:
-                        self.proxy.send(rtcm3ParseManager.origin_buf)
+                    self.handle_proxy(rtcm3ParseManager.origin_buf)
 
                     rtcm3ParseManager.reset()
                     current_type = -1
@@ -160,7 +167,6 @@ class UBlox:
                         print(f'ublox bad cka{ubxParseManager.msg_id}, {ubxParseManager.ck_b}, {val}')
                     else:
                         ubxParseManager.parse(ubxParseManager.class_id, ubxParseManager.msg_id, ubxParseManager.payload)
-                        if self.proxy:
-                            self.proxy.send(ubxParseManager.origin_buf)
+                        self.handle_proxy(ubxParseManager.origin_buf)
 
                     ubxParseManager.reset()
