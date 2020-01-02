@@ -230,7 +230,7 @@ class UbxParseManager(object):
                     'resserved3': res[17:19],
                     }
 
-            print(self.status["MSG_NAV_SVIN"])
+            #  print(self.status["MSG_NAV_SVIN"])
 
         elif class_id == CLASS_NAV and msg_id == MSG_NAV_CLOCK:
             #  print("MSG_NAV_CLOCK")
