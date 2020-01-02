@@ -55,7 +55,7 @@ class UBlox:
     def is_survey_in_success(self):
         flag = False
         if 'MSG_NAV_SVIN' in self.status:
-            flag = self.status['valid']
+            flag = self.status['MSG_NAV_SVIN']['valid']
 
         return flag
 
@@ -63,7 +63,7 @@ class UBlox:
     def is_survey_in_processing(self):
         flag = False
         if 'MSG_NAV_SVIN' in self.status:
-            flag = self.status['active']
+            flag = self.status['MSG_NAV_SVIN']['active']
 
         return flag
 
@@ -71,7 +71,7 @@ class UBlox:
     def survey_in_acc(self):
         acc = 1000000
         if 'MSG_NAV_SVIN' in self.status:
-            acc = int(self.status['meanAcc'] * 10)
+            acc = int(self.status['MSG_NAV_SVIN']['meanAcc'] * 10)
 
         return acc
 
