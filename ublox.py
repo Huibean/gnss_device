@@ -80,7 +80,7 @@ class UBlox:
     def survey_in_acc(self):
         acc = 1000000
         if 'MSG_NAV_SVIN' in self.status:
-            acc = int(self.status['MSG_NAV_SVIN']['meanAcc'] * 10)
+            acc = int(self.status['MSG_NAV_SVIN']['meanAcc'] / 10)
 
         return acc
 
