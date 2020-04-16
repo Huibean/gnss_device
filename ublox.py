@@ -3,6 +3,7 @@ from datetime import datetime
 import time, os
 import queue
 
+import serial
 import numpy as np
 from .ubx import UbxParseManager, PREAMBLE1, PREAMBLE2
 from .rtcm3 import RTCM3ParseManager, RTCM3_HEADER
@@ -26,8 +27,8 @@ class UBlox:
         elif os.path.isfile(self.serial_device):
             self.read_only = True
             self.dev = open(self.serial_device, mode='rb')
+            self.dev.write(f"$PUBX,41,1,0023,0001,{self.baudrate},0*1C\r\n")
         else:
-            import serial
             self.dev = serial.Serial(self.serial_device, baudrate=self.baudrate,dsrdtr=False, rtscts=False, xonxoff=False, timeout=timeout)
 
         self.proxy = proxy
@@ -35,8 +36,24 @@ class UBlox:
         self.rtcm3ParseManager = RTCM3ParseManager()
         self.rtcm_queue = queue.Queue()
 
+    def reload(self, baudrate=None, timeout=0, proxy=None):
+        if self.serial_device.startswith("tcp:"):
+            pass
+        elif os.path.isfile(self.serial_device):
+            pass
+        else:
+            if not baudrate:
+                baudrate = self.baudrate
+            else:
+                self.baudrate = baudrate
+
+            print("serial port reloading...")
+            self.dev.close()
+            self.dev = serial.Serial(self.serial_device, baudrate=self.baudrate,dsrdtr=False, rtscts=False, xonxoff=False, timeout=timeout)
+
     def read(self, n):
-        return self.dev.read(n)
+        if self.dev:
+            return self.dev.read(n)
 
     def write(self, buf):
         return self.dev.write(buf)
